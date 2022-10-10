@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>Getting Started · GitBook</title>
+        <title>2. Getting Started · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -107,7 +107,7 @@
                 <a href="Overview.html">
             
                     
-                    Overview
+                    1. Overview
             
                 </a>
             
@@ -120,7 +120,7 @@
                 <a href="Getting Started.html">
             
                     
-                    Getting Started
+                    2. Getting Started
             
                 </a>
             
@@ -133,7 +133,7 @@
                 <a href="Use of the database.html">
             
                     
-                    Use of the database
+                    3. Use of the Database
             
                 </a>
             
@@ -146,7 +146,20 @@
                 <a href="Maintenance of the database.html">
             
                     
-                    Maintenance of the database
+                    4. Maintenance of the Database
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="Android Studio Installation & Use.html">
+            
+                <a href="Android Studio Installation & Use.html">
+            
+                    
+                    5. Android Studio Installation & Use
             
                 </a>
             
@@ -184,7 +197,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href="." >Getting Started</a>
+        <a href="." >2. Getting Started</a>
     </h1>
 </div>
 
@@ -205,14 +218,14 @@
 Memory: 8G RAM
 Hard disk: 20G
 </code></pre><h2 id="11-installation">1.1 Installation</h2>
-<p>Totem can be installed by any unprivileged user and does not require superuser(root) privileges. The steps to install Totem on an ubuntu system are as follows.
-(1) Create the totem user
-You should set up a dedicated user name for the database, such as totem, as the superuser of Totem at runtime. Enter the command&#xFF1A;</p>
+<p>  Totem can be installed by any unprivileged user and does not require superuser(root) privileges. The steps to install Totem on an ubuntu system are as follows.</p>
+<p> (1) Create the totem user
+ You should set up a dedicated user name for the database, such as totem, as the superuser of Totem at runtime. Enter the command&#xFF1A;</p>
 <pre><code>adduser totem
-</code></pre><p>There is a security problem when running as root, bin or other special privilege user. In fact, tmaster refuses to run as root.
-(2) Download deb package
-Download the deb installation package of totem from the website of <a href="http://totemdb.whu.edu.cn/" target="_blank">Luojia Totem Lab</a>.
-(3) Install</p>
+</code></pre><p>There is a security problem when running as root, bin or other special privilege user. In fact, tmaster refuses to run as root.</p>
+<p>(2) Download deb package
+Download the deb installation package of totem from the website of <a href="http://totemdb.whu.edu.cn/" target="_blank">Luojia Totem Lab</a>.</p>
+<p>(3) Install</p>
 <pre><code>sudo dpkg -i totem_1.0-1_amd64.deb
 </code></pre><p>The default installation location is: /usr/local/totem</p>
 <p>(4) Modify directory permissions
@@ -226,10 +239,32 @@ Initialize.</p>
 <pre><code>mkdir /usr/local/totem/data
 /usr/local/totem/bin/initdb -D ../data #&#x5728;totem&#x7528;&#x6237;&#x4E0B;&#x6267;&#x884C;
 </code></pre><p>After successful connection using tsql, you can see the following image.</p>
-<p><img src="C:\Users\jys19\AppData\Roaming\Typora\typora-user-images\image-20220929171536169.png" alt="image-20220929171536169"></p>
-<h2 id="13-creat-the-database">1.3 Creat the database</h2>
+<p><img src="https://user-images.githubusercontent.com/113097627/194810402-09f6c3fa-1177-4a0f-8505-3842f90cc177.png" alt="image-1"></p>
+<h2 id="13-create-the-database">1.3 Create the database</h2>
 <p>The first example to see if you can access a database server is to try to create a database. A running TOTEM server can manage many databases. Usually we use a separate database for each project and each user. Your node administrator may have already created a database for Your node administrator has probably already created a database for you to use. He should have told you the name of this database. If so, you can skip this step and
 skip to the next section. To create a new database, called mydb in our example, you can use the following command.</p>
+<pre><code>$ ./createdb mydb #Execute this command under /usr/local/totem/bin
+</code></pre><p>It should generate a response like this.</p>
+<p><img src="https://user-images.githubusercontent.com/113097627/194810477-64e15af1-ac70-488f-bd36-240763f55a44.png" alt="image-2"></p>
+<p>If so, then this step is successful and you can ignore the rest of this section.
+If you see a similar message that reads&#xFF1A;</p>
+<pre><code>createdb: could not connect to database totem: could not connect to server:
+No such file or directory
+Is the server running locally and accepting
+connections on Unix domain socket &quot;/tmp/.s.PGSQL.5432&quot;?
+</code></pre><p>This means that the server is not started, or not started where createdb expects it to be. Again, you will want to check the installation instructions or find the administrator.
+Another response might be something like:</p>
+<pre><code>createdb: could not connect to database totem: FATAL: user &quot;joe&quot; does not exist
+</code></pre><p>Your own login name is mentioned here. If the administrator did not create TOTEM user account for you, the following will happen (TOTEM user account and OS user account are different). You need to become the identity of the OS user who installed TOTEM (usually totem) to create your first user account. It is also possible that the TOTEM user name given to you and your operating system user name are different. In this case, you need to declare your TOTEM user name using the -U switch or using the PGUSER environment variable.
+If you have a database user account, but do not have the permissions needed to create the database, then you will see something like the following.</p>
+<pre><code>createdb: database creation failed: ERROR: permission denied to create database
+</code></pre><p>Not all users are authorized to create new databases. If TOTEM refuses to create a database for you, then you need to ask your node administrator to grant you permission to create a database. Please consult your node administrator when this happens. If you installed TOTEM yourself, then you should log in as the user who started the database server and then refer to the manual to complete the privilege granting process.
+TOTEM allows you to create any number of databases on a node. Database names must start with a letter and have a maximum length of 31 characters. A convenient approach is to create databases with the same name as your current username. Many tools assume that the database name is the default database name, so this will save you work. To create such a database, simply type</p>
+<pre><code>$ ./createdb
+</code></pre><p>If you don&apos;t want to use your database anymore, then you can delete it. For example, if you are the owner of the database mydb (created person), then you can delete it with the following command.</p>
+<pre><code>$ ./dropdb mydb
+</code></pre><h2 id="14-accessing-the-database">1.4 Accessing the database</h2>
+<p>Once you have created a database, you can access it by. Running the TOTEM terminal monitor program tsql, where you can enter, edit and execute SQL commands. The next section describes how to run tsql, using the previous example of mydb. Enter the command . /tsql mydb and you will see the following response.</p>
 
                                 
                                 </section>
@@ -257,12 +292,12 @@ skip to the next section. To create a new database, called mydb in our example, 
 
             
                 
-                <a href="Overview.html" class="navigation navigation-prev " aria-label="Previous page: Overview">
+                <a href="Overview.html" class="navigation navigation-prev " aria-label="Previous page: 1. Overview">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
                 
-                <a href="Use of the database.html" class="navigation navigation-next " aria-label="Next page: Use of the database">
+                <a href="Use of the database.html" class="navigation navigation-next " aria-label="Next page: 3. Use of the Database">
                     <i class="fa fa-angle-right"></i>
                 </a>
                 
@@ -273,7 +308,7 @@ skip to the next section. To create a new database, called mydb in our example, 
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"Getting Started","level":"1.3","depth":1,"next":{"title":"Use of the database","level":"1.4","depth":1,"path":"Use of the database.md","ref":"Use of the database.md","articles":[]},"previous":{"title":"Overview","level":"1.2","depth":1,"path":"Overview.md","ref":"Overview.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":[],"pluginsConfig":{"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Getting Started.md","mtime":"2022-09-29T09:26:17.657Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-09-30T03:35:00.819Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"2. Getting Started","level":"1.3","depth":1,"next":{"title":"3. Use of the Database","level":"1.4","depth":1,"path":"Use of the database.md","ref":"Use of the database.md","articles":[]},"previous":{"title":"1. Overview","level":"1.2","depth":1,"path":"Overview.md","ref":"Overview.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Getting Started.md","mtime":"2022-10-10T06:43:36.711Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-10-10T07:26:00.994Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
@@ -281,6 +316,10 @@ skip to the next section. To create a new database, called mydb in our example, 
         
     <script src="gitbook/gitbook.js"></script>
     <script src="gitbook/theme.js"></script>
+    
+        
+        <script src="gitbook/gitbook-plugin-livereload/plugin.js"></script>
+        
     
         
         <script src="gitbook/gitbook-plugin-search/search-engine.js"></script>
