@@ -167,6 +167,19 @@
             
         </li>
     
+        <li class="chapter " data-level="1.7" data-path="JavaCC Basic Knowledge.html">
+            
+                <a href="JavaCC Basic Knowledge.html">
+            
+                    
+                    JavaCC Basic Knowledge
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
 
@@ -212,7 +225,195 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="use-of-the-database">Use of the Database</h1>
+                                <h1 id="2-use-of-the-database">2 Use of the Database</h1>
+<h2 id="21-introduction">2.1 Introduction</h2>
+<p>This chapter provides an overview of how to perform simple operations using <em>SQL</em> in TOTEM. In the examples that follow, we assume that you have created a database named <em>mydb</em> and have started <em>tsql</em>.</p>
+<p>TOTEM is a database management system based on the object-agent model. The concept of storing data in tables has become almost inherently common knowledge It is one of the most basic concepts of a relational database; however, there are other ways to organize a database. Files and directories on Unix-like operating systems are examples of hierarchical databases. A more modern development is the object-oriented database. Compared to the traditional object-oriented The object-agent model is more flexible, more flexible, and easier to use than the traditional object-oriented model.</p>
+<h2 id="22-basic-concept-of-proxy">2.2 Basic concept of Proxy</h2>
+<p>The so-called &quot;proxy&quot; refers to the process of switching all or some properties of an object (source object), such as name change, operation, etc., to derive another object (proxy object). The process of deriving another object (proxy object) by performing certain switching operations on all or some of the properties of an object (source object), such as name change, arithmetic, and so on. Through object proxies, the user can split and combine different objects to form new views. The object proxy allows the user to combine different objects into a new view of the object. Compared with the original object-oriented model, the object proxy model is more flexible, operation It is more flexible and easier to use.</p>
+<p>Both source and proxy objects belong to their own classes. Thus, the concept of source and proxy classes is formed. Proxy objects with switching operations and modes are gathered in a proxy class. There is a difference between a proxy class &quot;<em>proxying</em>&quot; the source class and &quot;<em>inheriting</em>&quot; in the general sense. A proxy class is more like a view of the source class. The proxy class is more like a view of the source class, with different proxy objects representing different roles played by the source object. Multiple proxy classes can be defined at the same time on a source class. Proxy Classes It is possible to proxy on several source classes at the same time by concatenation or merge operations. It is also possible to define additional proxy classes on a proxy class. It can also define other proxy classes on the proxy class. Proxy relationships are in the shape of a directed graph. The classes at the top of the proxy hierarchy are called base classes, and they can be considered are proxy classes without source classes.</p>
+<p>In the storage model, the objects of the basic class occupy the storage space and store the actual data. Most of the data in the database is stored in the base class. Proxy properties (called &quot;dummy properties&quot;) in proxy objects only have schema and no actual physical data elements. Between the source object and the proxy object are linked by bidirectional pointers, and a switch operation determines the value of the dummy property in the proxy object. Proxy objects can extend their own properties The proxy object can extend its own properties, but it is these extended properties that actually occupy the storage space.</p>
+<p>The definition of a proxy class is somewhat similar to the definition of a view in a relational database. For general query operations, the proxy class is exactly the same as a normal class. The proxy class is exactly the same as a normal class when it comes to general query operations.</p>
+<h2 id="23-creating-a-basic-class">2.3 Creating a basic class</h2>
+<p>The creation of a base class or proxy class in TOTEM corresponds to the creation of a table in traditional relational data. Basic classes are classes without source classes, they are the most basic classes and all their properties are real properties. It is essentially the same as a relational table, but it has methods. So we define a set of commands for the basic class,  which are similar to those for defining a basic table in a relational database, including: defining the class name, attribute name and attribute type; establishing constraints, such as whether the attribute is allowed to be null, the default value of the attribute, etc.; creating a method, defining the method name, parameter type, return type, and and function body.</p>
+<p>For example, the SQL statement to define a basic class (which stores information about all faculty members) faculty is as follows:</p>
+<pre><code>CREATE CLASS faculty
+(
+Id INT NOT NULL UNIQUE,
+Name VARCHAR(20) NOT NULL,
+birth INT,
+department VARCHAR(30),
+salary INT
+);
+</code></pre><h2 id="24--creating-a-proxy-class">2.4  Creating a proxy class</h2>
+<p>Defining a proxy class requires a proxy rule (essentially a query statement) to define the formal transformations to be performed on the source class. In order to ensure the clarity of the proxy relationship, the proxy rules must be somewhat qualified. In the object proxy model, only four simple proxy rules&#xFF0C;which are Select, Join, Union, and Group proxies.</p>
+<p>The proxy rules can be defined with certain semantic constraints, so that the object being proxied meets certain conditions. When an object is updated, the system automatically maintains the proxy rules according to these conditions. When an object is updated, the system automatically maintains consistency between objects based on these conditions. If no semantic constraints are declared, then a loose proxy class is defined (see the rest of this section) in which the objects are maintained manually by the user.</p>
+<h3 id="241-define-select-proxy-class">2.4.1 Define <strong>Select</strong> proxy class</h3>
+<p>Select type proxy allows to select only the source object from a class to be proxied. The source object and the proxy object are one-to-one correspondence.
+A select proxy class for the faculty class can be created by the following statement.</p>
+<pre><code>CREATE SELECTDEPUTYCLASS computer_faculty (field VARCHAR(30))
+AS
+(SELECT id, name, (extract(year from current_date) - birth) AS age FROM faculty
+WHERE department =&apos;computer&apos;)
+WRITE (faculty.birth = &apos;extract(year from current_date)&#xFF0D;age&apos;);
+</code></pre><p>The computer_faculty proxy class directly inherits the id, name attributes from the source class faculty, and adds an attribute field to represent the faculty&apos;s area of expertise. The value of the birth attribute is converted to age by the expression (extract(year from current_date)-birth) AS age.
+The constraint WHERE department = &apos;computer&apos; declares that the proxy class only proxies objects in the faculty class that belong to the computer department. The WRITE clause defines a write-switch operation for the age dummy attribute. It allows the age attribute to be updated.</p>
+<p>If the following query is made after the definition:</p>
+<p><img src="https://user-images.githubusercontent.com/113097627/195032476-0dd4431a-63e4-4557-b7fe-e6ce13fce01f.png" alt="image-5"></p>
+<p>As you can see, only the teachers in the computer department have been selected. Age property corresponds to the value of birth. Field is empty for now. Because this field does not proxy any source class data, you can only enter its value with the update command after the proxy class is created. As follows:</p>
+<pre><code>UPDATE computer_faculty SET field =&apos;Database&apos; WHERE name =&apos;jack&apos;;
+UPDATE computer_faculty SET field =&apos;Network&apos; WHERE name =&apos;john
+</code></pre><p>Querying the class again returns the following results:</p>
+<p><img src="https://user-images.githubusercontent.com/113097627/195033930-6c570660-82e3-4a33-8fc6-6f04f8f59eda.png" alt="image-6"></p>
+<h3 id="242-defining-the-join-proxy-class">2.4.2 Defining the Join proxy class</h3>
+<p>Join type proxy is a proxy on the result of the connection of several classes. It can achieve the effect of &quot;multiple inheritance&quot; like presentation. A proxy object in each source class corresponds to a source object.</p>
+<p>Example: Create a proxy class assistant to store information about all students (both students and teachers).</p>
+<pre><code>CREATE JOINDEPUTYCLASS assistant
+AS
+( SELECT student.name, salary FROM student,faculty
+WHERE student.id = faculty.id );
+</code></pre><p>Quert result:</p>
+<p><img src="https://user-images.githubusercontent.com/113097627/195035378-b4f42b59-387e-4676-ba0d-42a5a27b18be.png" alt="image-7"></p>
+<p>You can see that the assistant object has the properties of both source classes.</p>
+<h3 id="243-defining-the-union-proxy-class">2.4.3 Defining the Union proxy class</h3>
+<p>Union proxy is equivalent to combining the results of several select proxies in a single proxy class.</p>
+<p>Example: Create a union proxy class person for students and faculty, abstracting the two types of objects into one object of the same pattern.</p>
+<pre><code>CREATE UNIONDEPUTYCLASS person
+AS
+( SELECT name, birth FROM student UNION
+SELECT name, birth FROM faculty);
+select * from person;
+</code></pre><p>Quert result:</p>
+<p><img src="https://user-images.githubusercontent.com/113097627/195036501-293bc6ab-4605-4ad2-b9e2-46b7b735fa73.png" alt="image-8"></p>
+<p>It can be seen that the set of objects of the person class is a concatenation of the student and faculty classes.</p>
+<h3 id="244-defining-the-group-proxy-class">2.4.4 Defining the Group proxy class</h3>
+<p>Group-type proxies are proxies that group on a single class. Although, like the select proxy, it requires a proxy class to correspond to only one source Group proxies generally contain aggregation operations in their rules.</p>
+<p>Example: Creating a group proxy class for faculty</p>
+<pre><code>CREATE GROUPDEPUTYCLASS dept_size
+AS
+( SELECT COUNT(id) AS size, department AS dept_name FROM faculty group by
+department);
+</code></pre><p>This proxy class counts the total number of teachers in each school department. Execute the query:</p>
+<pre><code>select * from dept_size;
+</code></pre><p>Return:</p>
+<p><img src="https://user-images.githubusercontent.com/113097627/195037795-42fde0ba-a26b-4ead-8365-0de7f40fbebb.png" alt="image-9"></p>
+<h3 id="245-defining-loose-proxy-classes">2.4.5 Defining loose proxy classes</h3>
+<p>The proxy classes defined in the previous sections all contain semantic constraints and are called strict proxy classes. Once a strict proxy class is defined, the set of objects in it is automatically determined by the system based on the constraints and cannot be arbitrarily inserted or removed by the user. A proxy class that does not contain semantic constraints in the proxy rules is called a loose proxy class. After definition, the set of objects in the loose proxy class is maintained manually by the user.
+The difference between the proxy rules of a loose proxy class and a strict proxy class is that:</p>
+<ol>
+<li><p>IMPRECISE keyword must be written;</p>
+</li>
+<li><p>no semantic constraints can be declared;</p>
+</li>
+</ol>
+<p>An example of creating a non-strict select proxy class for the student class is given below. This class is used to store information about &quot;my friends&quot;. It is up to the user to determine which objects in the student class can be &quot;my friends&quot;.</p>
+<pre><code>CREATE IMPRECISE SELECTDEPUTYCLASS my_friends(telephone int)
+AS ( SELECT name FROM student);
+</code></pre><h2 id="25--adding-objects-to-a-class">2.5  Adding objects to a class</h2>
+<p>TOTEM appends objects to a class in two cases.
+  (1) creating new objects in the base class.
+  (2) Appending objects to a loose proxy class </p>
+<h3 id="251--appending-objects-to-basic-classes">2.5.1  Appending objects to basic classes</h3>
+<p>The INSERT command is used to create a new object in the basic class with the following syntax structure:</p>
+<pre><code>INSERT INTO class [ ( column [, ...] ) ]
+{ DEFAULT VALUES | VALUES ( expression [, ...] ) | SELECT query }
+</code></pre><p>The INSERT statement is entered as</p>
+<ol>
+<li>class, the name of the existing base class.</li>
+<li>COLUMN, the name of the field in the class.</li>
+<li>DEFAULT VALUES, where all fields are populated with NULL or the value declared with the DEFAULT clause at creation.</li>
+<li>expression , a valid expression or value given to the column.</li>
+<li>QUERY, a valid query.</li>
+</ol>
+<p>The output of the INSERT statement is.</p>
+<ol>
+<li>INSERT oid 1, if only one object is inserted, returns this information, where oid is the numeric identifier of the object being inserted.</li>
+<li>INSERT 0 # returns this information if multiple objects were inserted, where # is the number of objects inserted.</li>
+</ol>
+<p>INSERT allows us to insert new objects into the class. We can insert multiple objects at once, and the columns/fields in the target list can be in any order. Columns/fields that do not appear in the target column will be inserted with default values: DEFAULT values defined or NULL. If a NULL value is inserted into a column defined as NOT NULL, TOTEM will reject the new object. If the expression is not of the correct data type, an attempt will be made to perform automatic type conversion. To insert data into a class, you must have insert permission, and also have select permission to handle any classes declared in the WHERE clause. Note that the &quot;columns/fields&quot; mentioned here correspond to the properties of the object.</p>
+<p>An example of the first INSERT usage: insert an object into the films. The command is as follows:</p>
+<pre><code>INSERT INTO films VALUES
+(&apos;UA502&apos;,&apos;Bananas&apos;,105,&apos;1971-07-13&apos;,&apos;Comedy&apos;,INTERVAL &apos;82 minute&apos;);
+</code></pre><p>The second usage example also inserts an object into the films, which omits the field len, so the default value of len will be stored as NULL.
+The command is as follows:</p>
+<pre><code>INSERT INTO films (code, title, did, date_prod, kind)
+VALUES (&apos;T_601&apos;, &apos;Yojimbo&apos;, 106, DATE &apos;1961-06-16&apos;, &apos;Drama&apos;);
+</code></pre><p>The user can also insert an object from another class tmp into the films with the following command:</p>
+<pre><code>INSERT INTO films SELECT * FROM tmp;
+</code></pre><h3 id="252-appending-objects-to-loose-proxy-classes">2.5.2 Appending objects to loose proxy classes</h3>
+<p>Append objects to the loose proxy class with ADD INTO, the syntax structure of the statement is as follows:</p>
+<pre><code>ADD ANY|INEXISTENT INTO name FROM source WHERE condition
+</code></pre><p>The ADD INTO command can only be used for loose proxy classes. Loose proxy classes are created without any objects, so if the user wants to add some objects from the source class to the If you want to add some objects from the source class to the loose proxy class, you need to use this command.
+The ADD INTO syntax is explained as follows:</p>
+<ol>
+<li>ANY, regardless of whether the object selected in the where clause has already been proxied or not, adds it to the proxy class, so that one
+object in the proxy class corresponds to more than one proxy object.</li>
+<li>INEXISTENT, in contrast to ANY, if the source object selected in the where clause is found to have already existed in the proxy class for at least one</li>
+<li>name, the name of the inserted target class.</li>
+<li>source, the name of the source class to which the Source object belongs.</li>
+<li>condition, a Boolean expression used to select the source object, which may not contain subqueries.</li>
+</ol>
+<p>The output of the ADD INTO statement is:</p>
+<ol>
+<li>COUNT, success, returns the number of joined objects.</li>
+<li>ERROR: can not insert into a precise deputy class, that is, TOTEM prohibits the use of ADD INTO to strictly proxy class Adding objects</li>
+</ol>
+<h2 id="26-query">2.6 Query</h2>
+<p>The query language of the object proxy database provides support for querying classes and proxy classes, and also provides cross-class querying based on path expressions. The query language of the object proxy database provides support for querying classes and proxy classes. For common queries (meaning queries that do not involve proxy classes and proxy objects), the query processing process of object proxy database can follow the common implementation methods of traditional databases are used. However, for the query processing involving the virtual properties of the proxy class, special processing is needed to make the proxy class queries can be described and implemented in the same form as the queries of traditional databases. TOTEM, an object proxy database system, has established a comprehensive query mechanism, which makes it possible for users to query classes and proxies freely and transparently, and also implements a special navigational query mechanism, i.e., cross-class queries. In the object proxy database, proxy relationships between (proxy) objects are represented by physical address pointer links.</p>
+<p>The proxy relationships between (proxy) objects are represented by physical address pointer links. Therefore, the objects form an object hierarchy connected by proxy relationships. Using the object hierarchy, you can start from a (proxy) object of a (proxy) class and class, you can query the (proxy) objects of other (proxy) classes that are directly or indirectly related to it. Cross-class queries make use of a path of object pointers between (proxy) objects is formed, and a path expression is used to reflect the syntactic structure of the path.</p>
+<h3 id="261-general-query">2.6.1 General Query</h3>
+<p>A query is a procedure or command that retrieves data from a database, TOTEM uses the SELECT command to declare a query. The generic SELECT command syntax is:</p>
+<pre><code>SELECT select_list FROM class_expression [sort_specification]
+</code></pre><p>The various parts of the SELECT syntax are described in detail next.
+The simplest form of the query is as follows:</p>
+<pre><code>SELECT * FROM class1;
+</code></pre><p>Assuming there is a class called class1, this command will retrieve all properties of all objects from class1. Selecting a column declaration * means that all properties provided by the class expression. It is also possible to select a subset of the optional columns and even compute the properties before retrieving them. Suppose class1 has attributes a, b, and c, then you can use the following query:</p>
+<pre><code>SELECT a, b + c FROM class1;
+</code></pre><p>FROM class1 is a very simple class expression (class_expression). Typically, class expressions can be complex constructs of basic classes, proxy classes, joins, and subqueries. However, you can also omit the class expression record and use the SELECT command as a calculator, such as SELECT 3 * 4. The expressions in the select_list (a,b+c in the above example) can also return varying results. For example, you can call a function with this method:</p>
+<pre><code>SELECT random();
+</code></pre><p>The class_expression in the SELECT a, b + c FROM class1 example is very simple, containing only one class, class1. The class expression in the SELECT a, b + c FROM class1 example is very simple, containing only one class, class1.
+The class expression can actually be used with WHERE, GROUP BY, and HAVING clauses as needed. These clauses declare a series of class expressions for classes that originate from the FROM clause (i.e., the class to be queried), and the resulting class is used to generate the output, which is based on the select_list. Class expressions support complex transformations of classes, such as join classes. A join class is based on the rules of a specific join type Classes derived from two other classes, specifically TOTEM supports INNER, OUTER and CROSS JOIN connection types.</p>
+<h3 id="262-cross-class-query">2.6.2 Cross-Class Query</h3>
+<p>To clearly describe cross-class queries, a detailed example is given here. Again, consider the cross-media data management scenario where a user wants to see to see other users&apos; comments on a certain song, then first give the schema diagram for this scenario as follows:</p>
+<p><img src="https://user-images.githubusercontent.com/113097627/195047101-4349f2fa-1eed-45da-8783-bf6951ecc474.png" alt="image-10"></p>
+<p>music_lyr_TheBeatles_user1, music_lyr_TheBeatles_user2 are both proxy classes of music_lyr; music_lyr stores lyrics and songs, and its proxy class stores information such as user ratings, albums and lyrics.</p>
+<p>If user1 wants to see user2&apos;s comments on the same songs belonging to the album &quot;The Beatles&quot;, a simple cross-class query can achieve this, the specific SQL statement is as follows:</p>
+<pre><code>SELECT (music_lyr_TheBeatles_user1-&gt; music_lyr_TheBeatles_user2).comments
+FROM music_lyr_TheBeatles_user1
+WHERE title=&#x2018;TheOne&#x2019;;
+</code></pre><p>Note: When using cross-class queries you need to use parentheses to include the included paths, and you cannot use * for queries, e.g.:</p>
+<pre><code>#Brackets not used
+SELECT music_lyr_TheBeatles_user1-&gt; music_lyr_TheBeatles_user2.comments
+FROM music_lyr_TheBeatles_user1
+WHERE title=&#x2018;TheOne&#x2019;;
+#Unable to query all properties using *
+SELECT (music_lyr_TheBeatles_user1-&gt; music_lyr_TheBeatles_user2).*
+FROM music_lyr_TheBeatles_user1
+WHERE title=&#x2018;TheOne&#x2019;
+</code></pre><h2 id="27-update-object">2.7 Update Object</h2>
+<p>The user can update an existing object with the UPDATE command. Suppose you find that all the thermometer counts for November 28 are two degrees lower, then you can update the data in the following way:</p>
+<pre><code>UPDATE weather SET temp_hi = temp_hi - 2, temp_lo = temp_lo - 2 WHERE date &gt; &apos;1994-11-28&apos;;
+</code></pre><p>The new state of the object is shown below:</p>
+<pre><code>SELECT * FROM weather;
+city | temp_lo | temp_hi | prcp | date
+---------------+---------+---------+------+------------
+San Francisco | 46 | 50 | 0.25 | 1994-11-27
+San Francisco | 41 | 55 | 0 | 1994-11-29
+Hayward | 35 | 52 | | 1994-11-29
+(3 rows)
+</code></pre><h2 id="28-delete-object">2.8 Delete Object</h2>
+<p>The user can remove objects from the class with the DELETE command. Suppose you are no longer interested in Hayward&apos;s weather, then you can remove those objects from the class with the following method to remove those objects from the class:</p>
+<pre><code>DELETE FROM weather WHERE city = &apos;Hayward&apos;;
+</code></pre><p>All weather records belonging to Hayward will be deleted.</p>
+<pre><code>SELECT * FROM weather;
+city | temp_lo | temp_hi | prcp | date
+---------------+---------+---------+------+------------
+San Francisco | 46 | 50 | 0.25 | 1994-11-27
+San Francisco | 41 | 55 | 0 | 1994-11-29
+(2 rows)
+</code></pre><p>We must be careful when using statements of the following form:</p>
+<pre><code>DELETE FROM classname;
+</code></pre><p>If there is no condition, DELETE will remove all objects from the specified class, emptying it. The system will not ask you for confirmation until you do this!</p>
 
                                 
                                 </section>
@@ -256,7 +457,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"3. Use of the Database","level":"1.4","depth":1,"next":{"title":"4. Maintenance of the Database","level":"1.5","depth":1,"path":"Maintenance of the database.md","ref":"Maintenance of the database.md","articles":[]},"previous":{"title":"2. Getting Started","level":"1.3","depth":1,"path":"Getting Started.md","ref":"Getting Started.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Use of the database.md","mtime":"2022-10-10T07:08:15.177Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-10-10T07:26:00.994Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"3. Use of the Database","level":"1.4","depth":1,"next":{"title":"4. Maintenance of the Database","level":"1.5","depth":1,"path":"Maintenance of the database.md","ref":"Maintenance of the database.md","articles":[]},"previous":{"title":"2. Getting Started","level":"1.3","depth":1,"path":"Getting Started.md","ref":"Getting Started.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Use of the database.md","mtime":"2022-10-11T09:14:00.044Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-10-11T12:32:36.151Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

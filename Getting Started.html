@@ -167,6 +167,19 @@
             
         </li>
     
+        <li class="chapter " data-level="1.7" data-path="JavaCC Basic Knowledge.html">
+            
+                <a href="JavaCC Basic Knowledge.html">
+            
+                    
+                    JavaCC Basic Knowledge
+            
+                </a>
+            
+
+            
+        </li>
+    
 
     
 
@@ -212,7 +225,7 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="getting-started">Getting Started</h1>
+                                <h1 id="1-getting-started">1 Getting Started</h1>
 <p>It is recommended to use totem database in the following configurations&#xFF1A;</p>
 <pre><code>OS: Ubuntu 18.04 LTS 64-bit
 Memory: 8G RAM
@@ -265,7 +278,34 @@ TOTEM allows you to create any number of databases on a node. Database names mus
 <pre><code>$ ./dropdb mydb
 </code></pre><h2 id="14-accessing-the-database">1.4 Accessing the database</h2>
 <p>Once you have created a database, you can access it by. Running the TOTEM terminal monitor program tsql, where you can enter, edit and execute SQL commands. The next section describes how to run tsql, using the previous example of mydb. Enter the command . /tsql mydb and you will see the following response.</p>
-
+<p><img src="https://user-images.githubusercontent.com/113097627/194860193-151404fd-ebf5-41f7-91d4-2ecb10e40ff8.png" alt="image-3"></p>
+<p>The prompt <em>mydb=#</em> indicates that you are in the terminal monitor and can type SQL queries into the workspace managed by the terminal monitor.
+The monitor program tsql responds to special commands that begin with the backslash character &apos;\&apos;.
+For example, you can type the following command to get syntax help for various TOTEM SQL commands:</p>
+<pre><code>mydb=# \h
+</code></pre><p><img src="https://user-images.githubusercontent.com/113097627/194862041-3986b7df-84a9-4c95-992c-c28b6da6c9b6.png" alt="image-4"></p>
+<p>Once you have finished entering your query into the workspace, you can type the following to submit your workspace to the server:</p>
+<pre><code>mydb=&gt; \g
+</code></pre><p>This sentence tells the server to process the query. If your query ends in a semicolon, you do not need to use the &quot;\g&quot; command; tdsql will automatically process queries ending in a semicolon queries that end with a semicolon.
+To read a query from a file, such as myFile, rather than typing it on the command line, type:</p>
+<pre><code>\i myFile
+</code></pre><p>Exit from tsql back to UNIX, type:</p>
+<pre><code>\q
+</code></pre><p>Then tsql will exit and go back to your command line. Blanks (e.g., empty spaces, tabs and newlines, etc.) can be used freely in SQL queries. Single line comments use <em>&quot;--&quot;</em>. All content on that line that follows this symbol in that line will be ignored. For multi-line comments or intra-line comments, use <em>&quot;/</em> ... <em>/&quot;</em>.</p>
+<h2 id="15-database-configuration">1.5 Database Configuration</h2>
+<p>The configuration file is named totem.conf and is located in the database cluster directory. It includes the listening ip and port, database log settings, memory parameter settings (shared memory, temporary memory). settings (shared memory, temporary memory). Changes are made under this configuration file according to the needs of the application.
+Client authentication is controlled by a configuration file (usually named totem_hba.conf ), which is stored in the data directory of the database cluster. HBA stands for &quot;host-based authentication&quot;. When initdb initializes the data directory, it installs a default When initdb initializes the data directory, it installs a default totem_hba.conf file.
+The common format of the totem_hba.conf file is a set of records, one per line. Blank lines are ignored, and comments starting with the # symbol are ignored. are ignored. Records cannot exist across lines. A record consists of a number of fields separated by spaces and/or tabs. If a field is enclosed in quotation marks then it can contain whitespace. Quoting a keyword (e.g., all or replication) in a database, user, or address file causes the word to lose its special meaning. The word loses its special meaning and is simply used to match a database, user, or host with that name.
+Each record declares a connection type, a range of client IP addresses (if relevant to the connection type), a database name, a user name, and the authentication method used for connections that match these parameters. The first record matching the connection type, client address, database name and user name of the connection request will be The first record matching the connection type, the client address, the database name and the user name of the connection request will be used to perform the authentication. There is no &quot;leapfrogging&quot; or &quot;backtracking&quot; in this process: if a record is selected and authentication fails, it will no longer be used, the subsequent records are not considered. If there is no matching record, then access is denied.</p>
+<p>Each record can be in one of the following seven formats:</p>
+<pre><code>local database user auth-method [auth-options]
+host database user address auth-method [auth-options]
+hostssl database user address auth-method [auth-options]
+hostnossl database user address auth-method [auth-options]
+host database user IP-address IP-mask auth-method [auth-options]
+hostssl database user IP-address IP-mask auth-method [auth-options]
+hostnossl database user IP-address IP-mask auth-method [auth-options]
+</code></pre>
                                 
                                 </section>
                             
@@ -308,7 +348,7 @@ TOTEM allows you to create any number of databases on a node. Database names mus
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"2. Getting Started","level":"1.3","depth":1,"next":{"title":"3. Use of the Database","level":"1.4","depth":1,"path":"Use of the database.md","ref":"Use of the database.md","articles":[]},"previous":{"title":"1. Overview","level":"1.2","depth":1,"path":"Overview.md","ref":"Overview.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Getting Started.md","mtime":"2022-10-10T06:43:36.711Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-10-10T07:26:00.994Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"2. Getting Started","level":"1.3","depth":1,"next":{"title":"3. Use of the Database","level":"1.4","depth":1,"path":"Use of the database.md","ref":"Use of the database.md","articles":[]},"previous":{"title":"1. Overview","level":"1.2","depth":1,"path":"Overview.md","ref":"Overview.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Getting Started.md","mtime":"2022-10-10T12:59:17.608Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-10-11T12:32:36.151Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>

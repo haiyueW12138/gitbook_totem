@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
-        <title>4. Maintenance of the Database · GitBook</title>
+        <title>JavaCC Basic Knowledge · GitBook</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="description" content="">
         <meta name="generator" content="GitBook 3.2.3">
@@ -57,10 +57,8 @@
     <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
 
     
-    <link rel="next" href="Android Studio Installation & Use.html" />
     
-    
-    <link rel="prev" href="Use of the database.html" />
+    <link rel="prev" href="Android Studio Installation & Use.html" />
     
 
     </head>
@@ -141,7 +139,7 @@
             
         </li>
     
-        <li class="chapter active" data-level="1.5" data-path="Maintenance of the database.html">
+        <li class="chapter " data-level="1.5" data-path="Maintenance of the database.html">
             
                 <a href="Maintenance of the database.html">
             
@@ -167,7 +165,7 @@
             
         </li>
     
-        <li class="chapter " data-level="1.7" data-path="JavaCC Basic Knowledge.html">
+        <li class="chapter active" data-level="1.7" data-path="JavaCC Basic Knowledge.html">
             
                 <a href="JavaCC Basic Knowledge.html">
             
@@ -210,7 +208,7 @@
     <!-- Title -->
     <h1>
         <i class="fa fa-circle-o-notch fa-spin"></i>
-        <a href="." >4. Maintenance of the Database</a>
+        <a href="." >JavaCC Basic Knowledge</a>
     </h1>
 </div>
 
@@ -225,17 +223,21 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="3-maintenance-of-the-database">3 Maintenance of the Database</h1>
-<h2 id="31-daily-cleaning">3.1 Daily cleaning</h2>
-<p>As the database runs for a long time, it causes a lot of junk data and loss of old data. In order to keep the built database running smoothly, we have to do some maintenance work. The tasks discussed here are mainly restoring disk space, updating planner statistics, maintaining log files, and recovering OIDs. All these tasks are performed by using the vacuum command. So, the system administrator needs to run vacuum periodically to make the database run faster.</p>
-<p>In normal database operations, an UPDATE or DELETE on a row does not immediately delete the old tuple (version of the row). This method is necessary to getting the benefit of parallel control of multiple versions is necessary. But after a long time, no transaction cares about the data that has expired, and it is necessary to reclaim the physical space occupied by these records.</p>
-<p>When cleaning, you can define a class to be cleaned (this is mainly for those who do frequent deletion updates) This is less expensive, you can set a periodic cron task to clean those selected classes and ignore those classes that are already known to change less; the second way is cleaning up all classes of the entire database. In this case, the cleanup is more complete but more costly, requiring the entire database to be frozen, so we recommend scheduling a VACUUM of the entire database at a low-use time of day. If there are multiple databases in the system, don&apos;t forget to VACUUM each database separately (see the vacuumdb script).</p>
-<p>VACUUM, the standard VACUUM, maintains the stable state of the disk: finds old data and marks the physical space it occupies as available.</p>
-<p>VACUUM FULL, in addition to performing the work of a standard VACUUM, performs a disk cleanup of the entire class and returns all free space to the operating system. In general, for classes that are updated frequently, a medium frequency VACUUM is more appropriate than a low frequency VACUUM FULL.For most of the deleted tuples in a class, we recommend using VACUUM FULL so that the steady-state size of the class can be significantly reduced by VACUUM FULL&apos;s more aggressive approach.</p>
-<h2 id="32-backup-and-recovery">3.2 Backup and Recovery</h2>
-<p>The idea behind the SQL dump method is to create a text file full of SQL commands, which when fed back to the server will rebuild the database in the same state as when it was dumped. TOTEM provides the application tool totem_dump for this purpose. The basic usage of this command is&#xFF1A;</p>
-<pre><code>totem_dump dbname &gt; outfile
-</code></pre><p>As you can see, totem_dump outputs the results to standard output. We can see below what the benefits of this are. totem_dump is a normal TOTEM client application that allows you to back up the data in a database with this command But you must have read access to all the contents of the database, which is usually required of the database administrator. Use <em>totem_dump --help</em> to see more totem_dump usage.</p>
+                                <h1 id="6-javacc-basic-knowledge">6 JavaCC Basic Knowledge</h1>
+<p><img src="https://user-images.githubusercontent.com/113097627/195053821-0b24d099-1ced-4616-a7e3-3ca41934b773.png" alt="image6-1"></p>
+<p><img src="https://user-images.githubusercontent.com/113097627/195054021-5ca992e4-2654-477e-ab13-b2c66471d80d.png" alt="image6-2"></p>
+<p><img src="https://user-images.githubusercontent.com/113097627/195054289-e43e0eb3-1c5c-4018-8773-6ca22872fe99.png" alt="image6-3"></p>
+<p><img src="https://user-images.githubusercontent.com/113097627/195054504-cdbb28be-3ed4-4f33-882b-084a849b1aa0.png" alt="image6-4"></p>
+<p><img src="https://user-images.githubusercontent.com/113097627/195054805-24bcd016-3569-4ae9-981f-b957351f090b.png" alt="image6-5"></p>
+<p><img src="https://user-images.githubusercontent.com/113097627/195055092-58ba2982-c182-478c-86fb-9a3e24eac787.png" alt="image6-6"></p>
+<p><img src="https://user-images.githubusercontent.com/113097627/195055292-1f3aa07a-13b6-4108-bda4-9b88a7bbccf2.png" alt="image6-7"></p>
+<p><img src="https://user-images.githubusercontent.com/113097627/195055501-6c20a4c7-4d8c-442b-b8d7-4b7ea30c341a.png" alt="image6-8"></p>
+<p><img src="https://user-images.githubusercontent.com/113097627/195055652-78d8182d-54fd-43f1-8a37-34db5dbc1fb0.png" alt="image6-9"></p>
+<p><img src="https://user-images.githubusercontent.com/113097627/195056062-44371804-2260-4f5d-93fe-b64dc930e396.png" alt="image6-10"></p>
+<p><img src="https://user-images.githubusercontent.com/113097627/195056292-de3ff055-fb6b-47c3-a092-5c91d2be8a60.png" alt="image6-11"></p>
+<p><img src="https://user-images.githubusercontent.com/113097627/195056530-a0ed59de-514f-476f-9549-55a5e05a5c48.png" alt="image6-12"></p>
+<p><img src="https://user-images.githubusercontent.com/113097627/195056722-12747e77-ab37-466c-8247-d22487464631.png" alt="image6-13"></p>
+<p><img src="https://user-images.githubusercontent.com/113097627/195056887-24bd6227-2da0-4780-988d-40d25602a8eb.png" alt="image6-14"></p>
 
                                 
                                 </section>
@@ -263,14 +265,10 @@
 
             
                 
-                <a href="Use of the database.html" class="navigation navigation-prev " aria-label="Previous page: 3. Use of the Database">
+                <a href="Android Studio Installation & Use.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: 5. Android Studio Installation & Use">
                     <i class="fa fa-angle-left"></i>
                 </a>
                 
-                
-                <a href="Android Studio Installation & Use.html" class="navigation navigation-next " aria-label="Next page: 5. Android Studio Installation & Use">
-                    <i class="fa fa-angle-right"></i>
-                </a>
                 
             
         
@@ -279,7 +277,7 @@
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"4. Maintenance of the Database","level":"1.5","depth":1,"next":{"title":"5. Android Studio Installation & Use","level":"1.6","depth":1,"path":"Android Studio Installation & Use.md","ref":"Android Studio Installation & Use.md","articles":[]},"previous":{"title":"3. Use of the Database","level":"1.4","depth":1,"path":"Use of the database.md","ref":"Use of the database.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"Maintenance of the database.md","mtime":"2022-10-11T09:27:12.011Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-10-11T12:32:36.151Z"},"basePath":".","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"JavaCC Basic Knowledge","level":"1.7","depth":1,"previous":{"title":"5. Android Studio Installation & Use","level":"1.6","depth":1,"path":"Android Studio Installation & Use.md","ref":"Android Studio Installation & Use.md","articles":[]},"dir":"ltr"},"config":{"gitbook":"*","theme":"default","variables":{},"plugins":["livereload"],"pluginsConfig":{"livereload":{},"highlight":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"JavaCC Basic Knowledge.md","mtime":"2022-10-11T09:46:02.283Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2022-10-11T12:32:36.151Z"},"basePath":".","book":{"language":""}});
         });
     </script>
 </div>
